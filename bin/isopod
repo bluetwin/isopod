@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+require 'isopod'
+puts Isopod.hi(ARGV[0])
