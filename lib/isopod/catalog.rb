@@ -1,0 +1,4 @@
+class Isopod::Catalog
+
+
+end

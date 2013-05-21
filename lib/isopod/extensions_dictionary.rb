@@ -1,0 +1,3 @@
+class Isopod::ExtensionsDictionary
+
+end

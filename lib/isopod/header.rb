@@ -1,0 +1,3 @@
+class Isopod::Header
+
+end

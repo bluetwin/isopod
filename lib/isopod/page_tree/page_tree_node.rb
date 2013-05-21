@@ -1,0 +1,3 @@
+class Isopod::PageTreeNode
+
+end

@@ -1,0 +1,3 @@
+class Isopod::Object
+
+end

@@ -1,0 +1,3 @@
+class Isopod::CollectionItems
+
+end
