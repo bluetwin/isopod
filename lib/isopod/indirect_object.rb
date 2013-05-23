@@ -1,4 +1,7 @@
-class IndirectObject
-  attr_reader :num, :gen_num, :value
+class Isopod::IdirectObject < Isopod::Object
+  attr_reader :number, :generation, :data
 
+  def initialize io
+
+  end
 end

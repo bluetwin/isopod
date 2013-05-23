@@ -1,3 +1,4 @@
+require 'isopod/buffer.rb'
 
 class Isopod
   def self.hi(language="english")
