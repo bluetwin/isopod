@@ -15,34 +15,31 @@ class Isopod::IO
 
     def initialize(io)
       @io = io
+      @pos = @io.pos
       @tokens = []
     end
-    
-    def peek
-      token(:peek=>true)
-    end
 
-
-    def token(*args)
-      options = args.extract_options!
+    def token(peek=false)
       tok = ""
       # read until tne next whitespace solidus or eol marker
-      @pos = @io.pos if options[:peek] == true
+      @pos = @io.pos if peek
       while !TOKEN_WHITESPACE.include?(byte = @io.getbyte)
         tok << byte
       end
-      @io.seek @pos, IO::SEEK_SET if options[:peek] == true
-    end
-    
-    def clear 
-      @tokens.clear
+      @io.seek @pos, IO::SEEK_SET if peek
+      tok
     end
 
-    def tokens(count)
+    def prime(count)
+      # consume count number of tokens
       count.times do |i|
         @tokens << token
       end
       @tokens
+    end
+
+    def clear
+      @buffer.clear
     end
 
     def read(bytes)

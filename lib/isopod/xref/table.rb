@@ -1,27 +1,27 @@
 class Isopod::XrefTable
   def initialize(*args)
     options               = args.extract_options!
-    @io                 ||= options[:io]
+    @buffer             ||= options[:buffer]
     @offset             ||= options[:offset]
     @sub_sections         = []
+    @start		  = nil
+    @count		  = nil
     load
   end
 
   def load
-    @io.seek(@offset, IO::SEEK_SET)
-    keyword = @io.readline
-    puts keyword
-    return nil if !keyword.include?("xref")
+    @buffer.seek(@offset)
+    return nil if !@buffer.token.include?("xref")
     load_sub_sections
   end
 
   def load_sub_sections
-    sub_section = XrefSubSection.new(@io)
-    while !sub_section.empty?
-      @sub_sections << sub_section
-      sub_section = XrefSubSection.new(@io)
-    end
-
+    # next two tokens are start_index and count
+    @start, @count = @buffer.tokens(2)
+    @count.times do |i|
+      @sub_sections << XrefSubsection.new(@buffer)
+    end 
+    
   end
 
 end
