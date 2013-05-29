@@ -1,7 +1,16 @@
-class Isopod::Stream
-  attr_reader :dict, :data
+class Isopod::Stream < Isopod::IndirectObject
+  attr_reader :dict
 
-  def parse(io)
+  def parse(buf)
+    super(buf)
+  end
+
+  
+
+  def decode
+
 
   end
+
+
 end

@@ -1,0 +1,19 @@
+class Isopod::Xref 
+  attr_reader :entries, :buf
+
+  def initialize(buf)
+    @buf = buf
+    parse
+  end
+
+  def parse
+    # peek next token
+    if @buf.token(:peek=>true) == 'xref'
+      load_table
+    else
+      load_stream
+    en
+d
+  end
+
+end

@@ -1,25 +1,20 @@
 class Isopod::XrefEntry
   attr_reader :offset, :gen, :keyword, :object
 
-  IDENT = /\d+ \d+ (n|f)/
-
-  def initialize(io)
-    @io         = io
+  def initialize(buf)
+    @buffer     = buf
     @object     = nil
-    parse(io.readline)
+    parse
   end
 
-  def parse(str)
-    if str.match(IDENT)
-      @offset, @gen, @keyword = str.split(/\s+/)
+  def parse
+      @offset, @gen, @keyword = @buffer.tokens(3)
       load_object
     end
   end
 
   def load_object
-    pos         = @io.pos  # save position to come back
-    @object     = PdfObject.new(@io, offset)
-    @io.seek pos, IO::SEEK_SET
+
   end
 
 end

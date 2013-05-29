@@ -1,6 +1,4 @@
-class Isopod::IO
-
-  class Buffer 
+class Isopod::Buffer 
     TOKEN_WHITESPACE=[0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20]
 
     # some strings for comparissons. Declaring them here avoids creating new
@@ -8,6 +6,7 @@ class Isopod::IO
     LEFT_PAREN = "("
     LESS_THAN = "<"
     STREAM = "stream"
+    ENDSTREAM = "endstram"
     ID = "ID"
     FWD_SLASH = "/"
 
@@ -18,37 +17,51 @@ class Isopod::IO
       @tokens = []
     end
     
-    def peek
-      token(:peek=>true)
-    end
-
-
-    def token(*args)
-      options = args.extract_options!
-      tok = ""
-      # read until tne next whitespace solidus or eol marker
-      @pos = @io.pos if options[:peek] == true
-      while !TOKEN_WHITESPACE.include?(byte = @io.getbyte)
-        tok << byte
-      end
-      @io.seek @pos, IO::SEEK_SET if options[:peek] == true
-    end
-    
     def clear 
       @tokens.clear
     end
-
-    def tokens(count)
-      count.times do |i|
-        @tokens << token
-      end
-      @tokens
+    
+    def peek
+      tok = ""
+      @pos = @io.pos
+      tok = token
+      @io.seek @pos, IO::SEEK_SET
+      tok
     end
 
     def read(bytes)
       @io.read(bytes)
     end    
 
-  end
+    def seek(bytes, type)
+      @io.seek(bytes, type)
+    end
+
+    def token(*args)
+      options       = args.extract_options!
+      reverse	  ||= options[:reverse]
+      tok 	    = ""
+      # read until tne next whitespace solidus or eol marker
+      # TODO: Check for EOF
+      @io.seek -2, IO::SEEK_CUR if reverse
+      while !TOKEN_WHITESPACE.include?(byte = @io.getbyte)
+        tok << byte
+        @io.seek -2, IO::SEEK_CUR if reverse
+      end
+      (reverse ? tok.reverse! : tok)
+    end
+
+    def tokens(*args)
+      options       = args.extract_options!
+      count         = options[:count].nil? ? args[0] : options[:count]
+      reverse     ||= options[:reverse]
+
+      count.times do |i| # TODO: check for EOF
+        @tokens << token(:reverse=> reverse)
+      end
+      @tokens
+    end
+
+
 
 end
