@@ -32,7 +32,7 @@ class Isopod::Xref
   end
 
   def stream
-    # create stream object
+    # parse stream
 
     # decode
 

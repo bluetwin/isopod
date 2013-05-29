@@ -6,6 +6,4 @@ class Isopod::Object
     @buffer 	= buf
   end
 
-  
-
 end

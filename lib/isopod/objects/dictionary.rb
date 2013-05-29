@@ -1,5 +1,9 @@
 class Isopod::Dictionary
-  def parse(io)
+  def initialize(buf)
+    super(buf)
+  end
+
+  def parse
 
   end
 

@@ -3,10 +3,9 @@ class Isopod::Stream < Isopod::IndirectObject
 
   def parse(buf)
     super(buf)
-  end
-
+    
+  end  
   
-
   def decode
 
 

@@ -1,5 +1,5 @@
 class Isopod::IndirectObject < Isopod::Object
-  attr_reader :num, :generation
+  attr_reader :num, :generation, :contents
 
   LEFT_PAREN = "("
   LESS_THAN = "<"
@@ -7,14 +7,21 @@ class Isopod::IndirectObject < Isopod::Object
   ID = "ID"
   FWD_SLASH = "/"
 
-  def parse(buf)
+  def initialize(buf)
     super(buf)
+  end
+
+  def parse
     @num, @generation = @buffer.tokens(2)
     @buffer.token if @buffer.peek.eq?("obj") # Indirect external object
   end
   
-  def parse_object
-    
+  def content
+   while @buffer.peek.eq?('endobj')
+     # peek next object then parse
+     
+   end 
+   
   end
 
 end
