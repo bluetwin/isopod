@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   if s.respond_to? :specification_version then
     s.specification_version = 3
     s.add_runtime_dependency "file-tail",["= 1.0.12"]
+    s.add_development_dependency 'rspec', '~> 2.5'
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
     else
     end

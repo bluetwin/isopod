@@ -17,8 +17,7 @@ class Isopod
   end
 end
 
-
-
 require 'isopod/translator'
 require 'isopod/trailer'
 require 'isopod/buffer'
+require 'isopod/document'

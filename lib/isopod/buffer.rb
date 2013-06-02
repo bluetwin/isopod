@@ -22,17 +22,17 @@ class Isopod::Buffer
 
     def initialize(io)
       @io = io
-      @tokens = []
+      @tokens = [] # Queue struc: FIFO
     end
     
     def clear 
       @tokens.clear
     end
     
-    def peek
+    def peek(c=nil)
       tok = ""
       @pos = @io.pos
-      tok = token
+      tok = c ? tokens(c) : token
       @io.seek @pos, IO::SEEK_SET
       tok
     end
@@ -46,14 +46,16 @@ class Isopod::Buffer
     end
 
     def object
-      case (tok = @buffer.peek)
+      obj = nil
+      puts "Buffer::peek : #{peek}"
+      case peek
        when LEFT_PAREN	 
          Isopod::String.new(self)
        when LEFT_BRACKET 
          Isopod::Array.new(self)
        when LESS_THAN 	
-        if tok.eq?(LESS_THAN) 
-          Isodod::Dictionary.new(self)
+        if peek(2).join.eq?(LESS_THAN*2) 
+          obj = Isodod::Dictionary.new(self)
         else
           Isopod::HexString.new(self)
         end
@@ -62,27 +64,45 @@ class Isopod::Buffer
        else
          nil
       end
+      obj
     end
+
+    # return the next token from the source. Returns a string if a token
+    # is found, parser will break on object identifierts or whitespace
+    #
+    # Its best to define a token here:
+    #   a token is a piece of the underlying @io stream which can be any of 
+    #   the following:
+    #    a literal : number, string, endcoded byte stream
+    #    whitespace as defined in the PDF spec
+    #    an object identifier (,[,<,<<
+    # Handling of sub-objects shoudl be handled by the object created and 
+    # it parser.
+    # Strategy: consume until a white space is met, if an object identifier 
+    #           is met, stop unless token is empty, then consume and stop
+
 
     def token(*args)
       options       = args.extract_options!
       reverse	  ||= options[:reverse]
-      tok 	    = ""
       # read until tne next whitespace solidus or eol marker
       # TODO: Check for EOF
+      tok = ""
       @io.seek -2, IO::SEEK_CUR if reverse
       while !TOKEN_WHITESPACE.include?(byte = @io.getbyte)
-        tok << byte
+        add_token tok, byte
+        token << byte
         @io.seek -2, IO::SEEK_CUR if reverse
       end
-      (reverse ? tok.reverse! : tok)
+      (reverse ? token.reverse! : token)
     end
     
+    def add_token
     
 
     def tokens(*args)
       options       = args.extract_options!
-      count         = options[:count].nil? ? args[0] : options[:count]
+      count         = options[:count].nil? ? args[0].to_i : options[:count]
       reverse     ||= options[:reverse]
 
       count.times do |i| # TODO: check for EOF
